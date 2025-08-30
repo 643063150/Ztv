@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>直播间管理</title>
+  <style>
+    /* 样式部分保持不变 */
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f9;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+    }
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+    .header h1 {
+        color: #1c6de6;
+        margin-bottom: 5px;
+    }
+    .header p {
+        color: #666;
+        margin-top: 0;
+    }
+    .input-box {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    textarea {
+        width: 100%;
+        min-height: 120px;
+        max-height: 300px;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        resize: vertical;
+        overflow-y: auto;
+        font-family: monospace;
+        box-sizing: border-box;
+        margin-bottom: 15px;
+        transition: border-color 0.3s;
+    }
+    textarea:focus {
+        border-color: #4e9af1;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(78, 154, 241, 0.2);
+    }
+    button {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(90deg, #4e9af1, #1c6de6);
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(28, 109, 230, 0.3);
+    }
+    button:hover {
+        background: linear-gradient(90deg, #1c6de6, #4e9af1);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(28, 109, 230, 0.4);
+    }
+    button:active {
+        transform: translateY(0);
+    }
+    button:disabled {
+        background: #cccccc;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+    .status-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: white;
+        padding: 12px 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .connection-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .status-indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #e74c3c;
+    }
+    .status-indicator.connected {
+        background: #2ecc71;
+    }
+    .status-indicator.connecting {
+        background: #f39c12;
+        animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.4; }
+        100% { opacity: 1; }
+    }
+    .status-text {
+        font-size: 14px;
+        font-weight: 500;
+    }
+    .retry-btn {
+        padding: 6px 12px;
+        background: #f1f1f1;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .retry-btn:hover {
+        background: #e9e9e9;
+    }
+    /* 修改用户卡片容器为瀑布流布局 */
+    #result {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 0;
+      list-style: none;
+    }
+    .user-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+        text-align: center;
+    }
+    .user-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
+    .avatar {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        margin-bottom: 15px;
+        object-fit: cover;
+        border: 2px solid #f1f1f1;
+    }
+    .nickname {
+        font-weight: bold;
+        font-size: 16px;
+        margin-bottom: 15px;
+        color: #333;
+    }
+    .save-btn {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        background: #28a745;
+        color: #fff;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+    .save-btn:hover {
+        background: #218838;
+        transform: translateY(-2px);
+    }
+
+    /* 半透明蒙版样式 */
+    #overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    /* 加载动画样式 */
+    #loading {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        z-index: 1000;
+    }
+    @keyframes spin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+        .status-bar {
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        #result {
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 15px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        body {
+            padding: 15px;
+        }
+        .input-box {
+            padding: 15px;
+        }
+        textarea, button {
+            width: 100%;
+            margin: 5px 0;
+        }
+        #result {
+            grid-template-columns: 1fr;
+        }
+        .user-card {
+            padding: 15px;
+        }
+    }
+
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        background: #333;
+        color: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transform: translateX(100%);
+        opacity: 0;
+        transition: transform 0.3s, opacity 0.3s;
+        z-index: 1001;
+    }
+    .notification.show {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    .notification.success {
+        background: #28a745;
+    }
+    .notification.error {
+        background: #dc3545;
+    }
+    .notification.warning {
+        background: #ffc107;
+        color: #333;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>直播间管理</h1>
+    <p>输入抖音主页链接或分享的主页数据，系统将自动解析用户信息</p>
+  </div>
+
+  <div class="status-bar">
+    <div class="connection-status">
+      <div class="status-indicator" id="statusIndicator"></div>
+      <span class="status-text" id="statusText">连接已断开</span>
+    </div>
+    <button class="retry-btn" id="retryBtn" onclick="reconnectWebSocket()">重新连接</button>
+  </div>
+
+  <div class="input-box">
+    <textarea id="liveInput" placeholder="请输入用户主页链接或分享的主页数据..."></textarea>
+    <button onclick="submitData()" id="submitBtn">提交</button>
+  </div>
+
+  <div id="overlay"></div>
+  <div id="loading"></div>
+  <div id="result"></div>
+</div>
+
+<div class="notification" id="notification"></div>
+
+<script>
+  const loading = document.getElementById('loading');
+  const overlay = document.getElementById('overlay');
+  const statusIndicator = document.getElementById('statusIndicator');
+  const statusText = document.getElementById('statusText');
+  const retryBtn = document.getElementById('retryBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  const notification = document.getElementById('notification');
+
+  let webSocket = null;
+  let reconnectAttempts = 0;
+  const maxReconnectAttempts = 5;
+  let reconnectDelay = 1000; // 初始重连延迟1秒
+
+  function showNotification(message, type = 'info') {
+    notification.textContent = message;
+    notification.className = 'notification ' + type;
+    notification.classList.add('show');
+
+    setTimeout(() => {
+      notification.classList.remove('show');
+    }, 3000);
+  }
+
+  function updateConnectionStatus(status) {
+    statusIndicator.classList.remove('connected', 'connecting');
+
+    switch(status) {
+      case 'connected':
+        statusIndicator.classList.add('connected');
+        statusText.textContent = '已连接到电视';
+        retryBtn.style.display = 'none';
+        break;
+      case 'connecting':
+        statusIndicator.classList.add('connecting');
+        statusText.textContent = '正在连接电视...';
+        retryBtn.style.display = 'none';
+        break;
+      case 'disconnected':
+        statusText.textContent = '连接已断开';
+        retryBtn.style.display = 'block';
+        break;
+      case 'error':
+        statusText.textContent = '连接错误';
+        retryBtn.style.display = 'block';
+        break;
+    }
+  }
+
+  function setupWebSocketConnection() {
+    updateConnectionStatus('connecting');
+
+    if (webSocket) {
+      webSocket.close();
+    }
+
+    const wsUrl = `ws://${window.location.host}/ws`;
+    webSocket = new WebSocket(wsUrl);
+
+    webSocket.onopen = function() {
+      console.log('WebSocket连接已建立');
+      updateConnectionStatus('connected');
+      reconnectAttempts = 0;
+      reconnectDelay = 1000;
+      // 首次连接成功后，立即尝试获取数据
+      webSocket.send("get-data");
+    };
+
+    webSocket.onmessage = function(event) {
+      console.log('收到来自服务器的WebSocket数据:', event.data);
+
+      try {
+        const jsonData = JSON.parse(event.data);
+        if (jsonData.data && Array.isArray(jsonData.data)) {
+          loading.style.display = 'none';
+          overlay.style.display = 'none';
+          submitBtn.disabled = false;
+          renderUserList(jsonData);
+        } else if (jsonData.status === 'error' && jsonData.message) {
+          loading.style.display = 'none';
+          overlay.style.display = 'none';
+          submitBtn.disabled = false;
+          showNotification('请求失败: ' + jsonData.message, 'error');
+        }
+      } catch (e) {
+        console.error('解析JSON失败:', e);
+        loading.style.display = 'none';
+        overlay.style.display = 'none';
+        submitBtn.disabled = false;
+      }
+    };
+
+    webSocket.onclose = function(event) {
+      console.log('WebSocket连接已断开', event);
+      updateConnectionStatus('disconnected');
+
+      // 实现指数退避重连机制
+      if (reconnectAttempts < maxReconnectAttempts) {
+        setTimeout(() => {
+          reconnectAttempts++;
+          reconnectDelay *= 2; // 每次重连延迟加倍
+          console.log(`尝试重新连接 (${reconnectAttempts}/${maxReconnectAttempts})...`);
+          setupWebSocketConnection();
+        }, reconnectDelay);
+      } else {
+        showNotification('无法连接到服务器，请检查网络连接', 'error');
+      }
+    };
+
+    webSocket.onerror = function(error) {
+      console.error('WebSocket发生错误:', error);
+      updateConnectionStatus('error');
+    };
+  }
+
+  function reconnect() {
+    reconnectAttempts = 0;
+    reconnectDelay = 1000;
+    setupWebSocketConnection();
+  }
+
+  function submitData() {
+    const input = document.getElementById('liveInput').value.trim();
+
+    if (!input) {
+      showNotification('请输入直播间链接或数据', 'warning');
+      return;
+    }
+
+    submitBtn.disabled = true;
+
+    fetch('/submit', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'input=' + encodeURIComponent(input)
+    })
+    .then(res => res.json())
+    .then(res => {
+      showNotification(res.message, 'success');
+
+      // 延迟后显示加载动画和蒙版
+      setTimeout(() => {
+        loading.style.display = 'block';
+        overlay.style.display = 'block';
+        // 不再需要超时，WebSocket 会持续监听
+      }, 500);
+    })
+    .catch(err => {
+      showNotification('提交失败: ' + err.message, 'error');
+      submitBtn.disabled = false;
+    });
+  }
+
+  function saveUser(userId){
+    fetch('/save', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body: 'user=' + encodeURIComponent(userId)
+    })
+    .then(res => res.text())
+    .then(msg => {
+      showNotification('用户保存成功', 'success');
+    })
+    .catch(err => {
+      showNotification('保存失败: ' + err.message, 'error');
+    });
+  }
+
+  function renderUserList(jsonData) {
+    const container = document.getElementById('result');
+    container.innerHTML = '';
+
+    if (!jsonData.data || jsonData.data.length === 0) {
+      container.innerHTML = '<div class="no-data">没有找到用户数据</div>';
+      return;
+    }
+
+    jsonData.data.forEach(user => {
+      const div = document.createElement('div');
+      div.className = 'user-card';
+      div.innerHTML = `
+        <img class="avatar" src="${user.avatar}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2YxZjFmMSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIyNCIgZmlsbD0iIzk5OSI+5L2g5LqGPC90ZXh0Pjwvc3ZnPg=='"/>
+        <span class="nickname">${user.nickname}</span>
+        <button class="save-btn" onclick="saveUser('${user.user}')">保存用户</button>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  // 页面加载时建立WebSocket连接
+  document.addEventListener('DOMContentLoaded', function() {
+    setupWebSocketConnection();
+  });
+</script>
+</body>
+</html>
