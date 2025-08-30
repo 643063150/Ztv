@@ -1,13 +1,13 @@
 # ZTV
 
 
-一款专为 Android TV 设计的直播观看软件，允许您通过任何设备的浏览器远程控制，分析和保存抖音用户数据，并直接在电视大屏幕上观看直播。
+一款专为 Android TV 设计的直播观看软件，允许您通过任何设备的浏览器远程控制，分析和保存douyin用户数据，并直接在电视大屏幕上观看直播。
 
 ## ✨ 功能特性
 
 - **📺 网页远程控制**：应用启动后会创建一个本地 Web 服务。您可以通过手机或电脑浏览器扫描二维码或输入 IP 地址，即可访问控制面板。
     
-- **📊 智能数据分析**：在网页端输入抖音用户主页的分享链接或标题，即可自动抓取并以清晰的可视化图表展示用户数据。
+- **📊 智能数据分析**：在网页端输入douyin用户主页的分享链接或标题，即可自动抓取并以清晰的可视化图表展示用户数据。
     
 - **💾 数据持久化存储**：一键保存分析后的用户数据到电视本地。采用高性能的 MMKV 存储，随时可以快速查阅。
     
@@ -29,7 +29,7 @@
 
 本项目得以实现，离不开以下优秀的开源项目：
 
-- [**Douyin_TikTok_Download_API**](https://github.com/Evil0ctal/Douyin_TikTok_Download_API "null")：抖音数据解析核心。
+- [**Douyin_TikTok_Download_API**](https://github.com/Evil0ctal/Douyin_TikTok_Download_API "null")：douyin数据解析核心。
     
 - [**GSYVideoPlayer**](https://github.com/CarGuo/GSYVideoPlayer "null")：提供稳定可靠的视频播放体验。
     
