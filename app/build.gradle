@@ -1,3 +1,5 @@
+// build.gradle (app-level)
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -12,7 +14,20 @@ android {
         targetSdk 36
         versionCode 1
         versionName "1.0"
+    }
 
+    // 启用 ABI 分割，根据不同的处理器架构打包
+    splits {
+        abi {
+            enable true
+            reset()
+            // 生产环境下需要打包的所有架构
+            include 'armeabi-v7a', 'arm64-v8a', 'x86'
+            // 排除其他架构，可以根据需要调整
+            exclude 'x86_64', 'armeabi'
+            // 为每个 ABI 生成单独的 APK
+            universalApk false
+        }
     }
 
     buildTypes {
@@ -21,6 +36,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
@@ -29,56 +45,37 @@ android {
 
 dependencies {
     implementation libs.glide
-    // Lifecycle components (ViewModel and LiveData)
-    implementation libs.androidx.lifecycle.viewmodel // 或更高版本
-    implementation libs.androidx.lifecycle.livedata // 或更高版本
-    //gson
+    implementation libs.androidx.lifecycle.viewmodel
+    implementation libs.androidx.lifecycle.livedata
     implementation libs.gson
-    // Retrofit 核心库
     implementation libs.retrofit
-    // OkHttp 核心库
     implementation libs.okhttp
-    // OkHttp 日志拦截器（可选）
     implementation libs.logging.interceptor
-    // Gson 转换器
     implementation libs.converter.gson
     implementation libs.androidx.appcompat
     implementation libs.material
     implementation libs.androidx.activity
     implementation libs.androidx.constraintlayout
-    // Leanback 核心库，用于传统的 XML 界面
-
     implementation libs.androidx.leanback.v120
-
-    // leanback-preference is an add-on that provides a settings UI for TV apps.
     implementation libs.androidx.leanback.preference
-
-    // leanback-paging is an add-on that simplifies adding paging support to a RecyclerView Adapter.
     implementation libs.androidx.leanback.paging
-
-    // leanback-tab is an add-on that provides customized TabLayout to be used as the top navigation bar.
     implementation libs.androidx.leanback.tab
 
+    // 核心库，不包含任何特定架构
     implementation 'io.github.carguo:gsyvideoplayer-java:11.1.0'
 
-    //是否需要ExoPlayer模式
-    implementation 'io.github.carguo:gsyvideoplayer-exo2:11.1.0'
-    implementation 'io.github.carguo:gsyvideoplayer-armv7a:11.1.0'
-    implementation 'io.github.carguo:gsyvideoplayer-x86:11.1.0'
+    // 根据构建类型 (buildType) 来包含不同的架构库
+    // 在调试 (debug) 模式下，只打包 x86 架构
+    debugImplementation 'io.github.carguo:gsyvideoplayer-x86:11.1.0'
 
+    // 在发布 (release) 模式下，打包所有需要的架构
+    releaseImplementation 'io.github.carguo:gsyvideoplayer-exo2:11.1.0'
+    releaseImplementation 'io.github.carguo:gsyvideoplayer-armv7a:11.1.0'
+    releaseImplementation 'io.github.carguo:gsyvideoplayer-arm64:11.1.0'
+    releaseImplementation 'io.github.carguo:gsyvideoplayer-x86:11.1.0'
+    releaseImplementation 'io.github.carguo:gsyvideoplayer-armv5:11.1.0'
 
-
-    // ZXing核心库，只包含生成二维码的核心代码
     implementation libs.core
-
-
-
-    // https://mvnrepository.com/artifact/com.koushikdutta.async/androidasync
     implementation("com.koushikdutta.async:androidasync:3.1.0")
-
     implementation 'com.tencent:mmkv:1.3.4'
-
-
-
-
 }
