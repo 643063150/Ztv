@@ -42,7 +42,7 @@
 
 ### 安装与运行
 
-1. **下载安装** 在项目的 [Releases](https://www.google.com/search?q=%E4%BD%A0%E7%9A%84%E9%93%BE%E6%8E%A5 "null") 中下载最新版本的 APK 文件，并将其安装到你的 Android TV 上。
+1. **下载安装** 在项目的 [Releases](https://github.com/643063150/Ztv/releases "null") 中下载最新版本的 APK 文件，并将其安装到你的 Android TV 上。
     
 2. **启动应用** 在电视上找到并启动 ZTV 应用。
     
