@@ -16,13 +16,14 @@
 
 ## 📸 应用截图
 
-![[Screenshot_20250830_215317.png]]
+<img width="1917" height="875" alt="Pasted image 20250830215430" src="https://github.com/643063150/Ztv/blob/master/image/Screenshot_20250830_215317.png" />
 
-![[Pasted image 20250830215430.png]]
+<img width="1917" height="875" alt="Pasted image 20250830215430" src="https://github.com/643063150/Ztv/blob/master/image/Pasted%20image%2020250830215430.png" />
 
-![[Pasted image 20250830220750.png]]
 
-![[Screenshot_20250830_220831.png]]
+<img width="1917" height="875" alt="Pasted image 20250830215430" src="https://github.com/643063150/Ztv/blob/master/image/Pasted%20image%2020250830220750.png" />
+
+<img width="1917" height="875" alt="Pasted image 20250830215430" src="https://github.com/643063150/Ztv/blob/master/image/Screenshot_20250830_220831.png" />
 
 ## 🛠️ 技术栈与开源库
 
