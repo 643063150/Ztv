@@ -77,7 +77,7 @@ public class WebFragmment extends Fragment {
                     // 确保在主线程更新UI
                     if (isAdded()) {
                         DisplayQRCode.generateAndDisplayQRCode(url, qr_code);
-                        ip_txt.setText("服务已开启在浏览器访问:" + url);
+                        ip_txt.setText(url);
                     }
                 }
 

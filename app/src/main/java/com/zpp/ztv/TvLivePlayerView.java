@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.OptIn;
-import androidx.media3.common.util.UnstableApi;
+
+
 
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.listener.GSYMediaPlayerListener;
@@ -27,9 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import tv.danmaku.ijk.media.exo2.Exo2PlayerManager;
-
-@OptIn(markerClass = UnstableApi.class)
 public class TvLivePlayerView extends FrameLayout {
     private static final String TAG = "TvLivePlayerView";
 

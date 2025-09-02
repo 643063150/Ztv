@@ -12,4 +12,12 @@
     <color name="tab_layout_default">#263238</color>
     <color name="tab_text_normal">#B3FFFFFF</color>
     <color name="tab_text_selected">#FFFFFF</color>
+    <color name="gray">#AAAAAA</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccentLight">#FF80AB</color>
+    <color name="colorItemBackground">#202020</color>
+    <color name="primaryDark">#303F9F</color>
+    <color name="primaryColor">#3F51B5</color>
+    <color name="secondaryText">#757575</color>
+
 </resources>
