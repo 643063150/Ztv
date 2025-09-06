@@ -77,9 +77,9 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.ViewHo
 
     private void savePreference(SettingFragment.SettingItem item){
         switch(item.title){
-            case "视频清晰度": mmkv.encode("video_quality", item.currentIndex); break;
-            case "硬件加速": mmkv.encode("hardware_acceleration", item.currentIndex); break;
-            case "播放速度": mmkv.encode("playback_speed", item.currentIndex); break;
+            case "播放器内核": mmkv.encode("player_core", item.currentIndex); break;
+            case "解码方式": mmkv.encode("mediacodec", item.currentIndex); break;
+            case "显示网速": mmkv.encode("show_net_speed", item.currentIndex); break;
             case "字幕显示": mmkv.encode("subtitle_toggle", item.currentIndex); break;
         }
     }

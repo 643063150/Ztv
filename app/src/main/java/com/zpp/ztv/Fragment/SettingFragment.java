@@ -57,14 +57,14 @@ public class SettingFragment extends Fragment {
 
     private void initSettings() {
         items = new ArrayList<>();
-        items.add(new SettingItem("视频清晰度", new String[]{"自动","标清","高清","超清","蓝光"},
-                mmkv.decodeInt("video_quality", 0), SettingType.LIST));
-        items.add(new SettingItem("硬件加速", new String[]{"已关闭","已开启"},
-                mmkv.decodeInt("hardware_acceleration", 1), SettingType.SWITCH));
+        items.add(new SettingItem("播放器内核", new String[]{"ExoPlayer","IJKPlayer","系统"},
+                mmkv.decodeInt("player_core", 0), SettingType.LIST));
+        items.add(new SettingItem("解码方式", new String[]{"硬解","软解"},
+                mmkv.decodeInt("mediacodec", 1), SettingType.SWITCH));
         items.add(new SettingItem("播放速度", new String[]{"0.5x","0.75x","1x","1.25x","1.5x","2x"},
                 mmkv.decodeInt("playback_speed", 2), SettingType.LIST));
-        items.add(new SettingItem("字幕显示", new String[]{"已关闭","已开启"},
-                mmkv.decodeInt("subtitle_toggle", 1), SettingType.SWITCH));
+        items.add(new SettingItem("显示网速", new String[]{"已关闭","已开启"},
+                mmkv.decodeInt("show_net_speed", 0), SettingType.SWITCH));
         items.add(new SettingItem("清空缓存", new String[]{""}, 0, SettingType.ACTION));
     }
 

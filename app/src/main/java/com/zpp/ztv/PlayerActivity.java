@@ -14,6 +14,7 @@ import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
 
 import com.shuyu.gsyvideoplayer.listener.GSYMediaPlayerListener;
+import com.tencent.mmkv.MMKV;
 
 
 @UnstableApi
@@ -32,7 +33,16 @@ public class PlayerActivity extends AppCompatActivity {
 
     public void initView(){
         url=getIntent().getStringExtra("url");
+        tvPlayerView.setMediaCodec(MMKV.defaultMMKV().decodeInt("mediacodec", 1));
+        tvPlayerView.switchPlayerCore(MMKV.defaultMMKV().decodeInt("player_core", 0));
+        int show_net_speed=MMKV.defaultMMKV().decodeInt("show_net_speed", 0);
+        if (show_net_speed==0){
+            tvPlayerView.showNetworkSpeed(false);
+        }else {
+            tvPlayerView.showNetworkSpeed(true);
+        }
         tvPlayerView.play(url);
+
 
     }
     @Override

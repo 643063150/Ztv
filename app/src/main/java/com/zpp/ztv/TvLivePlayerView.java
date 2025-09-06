@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +14,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
+import androidx.media3.exoplayer.ExoPlayer;
 
 
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.listener.GSYMediaPlayerListener;
+import com.shuyu.gsyvideoplayer.player.IjkPlayerManager;
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
@@ -26,6 +28,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 public class TvLivePlayerView extends FrameLayout {
     private static final String TAG = "TvLivePlayerView";
@@ -130,12 +134,6 @@ public class TvLivePlayerView extends FrameLayout {
             // 尝试隐藏一些常见的控件（如果 FullscreenNoUiVideo 已经隐藏则无影响）
             playerView.getTitleTextView().setVisibility(View.GONE);
             playerView.getBackButton().setVisibility(View.GONE);
-
-            View progressBar = playerView.findViewById(com.shuyu.gsyvideoplayer.R.id.bottom_progressbar);
-            if (progressBar != null) {
-                progressBar.setVisibility(View.GONE);
-                progressBar.setFocusable(false);
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -248,6 +246,23 @@ public class TvLivePlayerView extends FrameLayout {
     }
 
     /**
+     * 切换解码类型
+     * @param codecType 0: 硬解码, 1: 软解码
+     */
+    public void setMediaCodec(int codecType) {
+        switch (codecType){
+            case 0:
+                GSYVideoType.enableMediaCodec();
+                GSYVideoType.enableMediaCodecTexture();
+                break;
+            case 1:
+                GSYVideoType.disableMediaCodec();
+                GSYVideoType.disableMediaCodecTexture();
+                break;
+        }
+    }
+
+    /**
      * 切换绘制模式（改为通过 playerView 方法）
      * 0: SurfaceView, 1: Texture/GL（取决你的 FullscreenNoUiVideo 支持）
      */
@@ -293,6 +308,10 @@ public class TvLivePlayerView extends FrameLayout {
         }
     }
 
+    /**
+     * 是否显示网速
+     * @param show 0 隐藏 1显示
+     */
     public void showNetworkSpeed(boolean show) {
         this.isNetworkSpeedVisible = show;
         if (networkSpeedTv != null) {
